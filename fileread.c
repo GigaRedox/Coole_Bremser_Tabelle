@@ -35,13 +35,16 @@ void max_lengths(){
     }
 }
 void trim_string(char* string){
+    int count=0;
     for (int i=0; string[i]!='\0'; i++) {
         if (string[i]==' ') {
-            string[i]='\0';
-            break;
+            count++;
         
         }
-    
+    if (count==2) {
+        string[i-1]='\0';
+            break;
+    }
     }
 
 }
@@ -91,9 +94,9 @@ void change_values(int* rows,int* cols,char** new_vals,int n){
     
 }
 
-void save_file(){
+void save_file(char* name){
     FILE* saved_file;
-    saved_file=fopen("savedfile.txt", "w");
+    saved_file=fopen(name, "w");
     for (int i=0; i<ROWS; i++) {
         for (int j=0; j<COLS; j++) {
             if (j==0) {
@@ -110,33 +113,42 @@ void save_file(){
     }
     fclose(saved_file);
 }
-int main(){
-FILE* ptr=fopen("test.txt","r");
-char str[100];
+void load(char* file_name){
+FILE* ptr=fopen(file_name,"r");
+    char str[100];
 
-//char lines[ROWS][100];
-char* a;
-size_t len;
-for(int i=0;i<ROWS;i++){
-    fgets(str,100,ptr);
-    len=strlen(str);
-    str[len-1]='\0';
-    for (int j=0;j<COLS; j++) {
-        if (j==0) {
-            a=strtok(str,",");
+    //char lines[ROWS][100];
+    char* a;
+    size_t len;
+    for(int i=0;i<ROWS;i++){
+        fgets(str,100,ptr);
+        len=strlen(str);
+        str[len-1]='\0';
+        for (int j=0;j<COLS; j++) {
+            if (j==0) {
+                a=strtok(str,",");
+            }
+            else {
+                a=strtok(NULL,",");
+            }
+            strcpy(table[i][j],a);
         }
-        else {
-            a=strtok(NULL,",");
-        }
-        strcpy(table[i][j],a);
     }
+    fclose(ptr);
 }
-percentage();
-printtable();
-while(con){
-printf("What would you like to do? \n");
-scanf("%s",input);
-    
+int main(){
+    char file_name[100];
+    printf("Which file should be loaded?\n");
+    fgets(file_name,100,stdin);
+    file_name[strcspn(file_name,"\n")]='\0';
+    load(file_name);
+    percentage();
+    printtable();
+    while(con){//while con==true <=> con=1
+    printf("What would you like to do? \n");
+    fgets(input,sizeof(input),stdin);
+    //trim_string(input);
+    input[strcspn(input, "\n")] = '\0';    
     if (strcmp(input, "exit")==0) {
         printf("you're exiting the programm, farewell!\n");
         con=0;
@@ -145,7 +157,7 @@ scanf("%s",input);
     else if (strcmp(input, "savefile")==0) {
         printf("The file gets saved\n");
         trim_table();
-        save_file();
+        save_file(file_name);
         printf("the table was saved\n");
     
     }
@@ -162,8 +174,9 @@ scanf("%s",input);
         printf("Enter the postion and the new values one by one in the format: ROW COL new_value\n");
         printf("further note that the index starts at 0\n");
         for (int i=0; i<number_of_vals; i++) {
-            scanf("%d %d %s",&rows[i],&cols[i],new_vals[i]);
-        
+            scanf("%d %d ",&rows[i],&cols[i]);
+            fgets(new_vals[i], 100*sizeof(char), stdin);
+            new_vals[i][strcspn(new_vals[i], "\n")]='\0';
         }
         change_values(rows,cols,new_vals,number_of_vals);
         trim_table();
@@ -172,14 +185,15 @@ scanf("%s",input);
     }
     else{
         printf("unknown command please try again\n");
+        printf("%i %li\n",strcmp(input,"exit"),strlen(input));
     }
     
 
     
 }
 //printf("%s \n",a);
-fclose(ptr);
-printf("\n%zu,%zu,%zu\n",len_max[0],len_max[1],len_max[2]);
+    //fclose(ptr);    
+    printf("\n%zu,%zu,%zu\n",len_max[0],len_max[1],len_max[2]);
 
 }
 /*
