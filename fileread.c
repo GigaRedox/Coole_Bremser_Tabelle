@@ -232,6 +232,7 @@ FILE* ptr=fopen(file_name,"r");
     char* a;
     size_t len;
     for(int i=0;i<ROWS;i++){
+        printf("made it in for loop\n");
         fgets(str,sizeof(str),ptr);
         len=strlen(str);
         str[len-1]='\0';
@@ -242,22 +243,31 @@ FILE* ptr=fopen(file_name,"r");
             else {
                 a=strtok(NULL,",");
             }
+            printf("%s\n",a);
             strcpy(table[i][j],a);
         }
+        
     }
+    printf("exit for loop\n");
     fclose(ptr);
+    printf("closed the file\n");
 }
 int main(){
-    char file_name[100];
+    char file_name[255];
     printf("Which file should be loaded?\n");
+    printf("before fgets\n");
     fgets(file_name,100,stdin);
+    printf("after fgets\n");
     file_name[strcspn(file_name,"\n")]='\0';
     number_of_cols(file_name);
     number_of_rows(file_name);
     allocate_len_max();
     allocate_percentages_col();
     allocate_table();
+    printf("%i %i",ROWS,COLS);
+    printf("alloc works \n");
     load(file_name);
+    printf("Load funktioniert");
     percentage();
     printtable();
     while(con){//while con==true <=> con==1

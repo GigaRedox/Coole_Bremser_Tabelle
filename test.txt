@@ -1,3 +1,3 @@
-Gabriel Abzaoui,20
-Alijoscha,25
-Fabian,39
+Gabriel Abzaoui,0
+Alijoscha,0
+Fabian,0
